@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:emp_sys/statemanager/provider.dart';
 import 'package:emp_sys/widgets/eventsUI.dart';
@@ -60,6 +61,39 @@ class DetailedInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final Provider11 = Provider.of<Provider1>(context, listen: true);
     final size = MediaQuery.of(context).size;
+      List<String> dateList = [];
+  getDates() {
+  DateTime startDate = DateTime(DateTime.now().year, 10, 1); // Start date: October 1st of the current year
+  DateTime endDate = DateTime.now(); // Today's date
+
+
+
+  for (var date = startDate; date.isBefore(endDate) || date.isAtSameMomentAs(endDate); date = date.add(Duration(days: 1))) {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    dateList.add(formattedDate);
+  }
+
+  for (var date in dateList) {
+    print(date);
+  }
+}
+
+ getFireBaseSubCollection(List<String> dates, String mainCollection ,String uid) async{
+
+    for (var i = 0; i < dates.length; i++) {
+        final DocumentSnapshot document = await FirebaseFirestore.instance.collection("$mainCollection").doc("$uid").collection(dates[i]).doc("$uid").get();
+        if (document.exists) {
+          print("data exists");
+          
+        } else {
+          print("data not exists");
+        }
+    }
+    
+
+}
+
+
     return Container(
       width: size.width / 1.6,
       height: size.height / 2.85,
@@ -344,8 +378,15 @@ class DetailedInfo extends StatelessWidget {
                                                         padding: EdgeInsets.symmetric(horizontal: 1)
                                                       ),
                                                       
-                                                      onPressed: (){
-                                                  
+                                                      onPressed: ()async{
+
+     
+
+        // final DocumentSnapshot document = await FirebaseFirestore.instance.collection("morning_Shift").doc("2dCXtkkraFST33jeRvgG4WWkT9i2").get();
+                                                            // print(document.data());
+                                                            // .doc('2dCXtkkraFST33jeRvgG4WWkT9i2').collection('comments')
+                                                     await  getDates();
+                                                     await  getFireBaseSubCollection(dateList,"morning_Shift","2dCXtkkraFST33jeRvgG4WWkT9i2");
                                                       }, 
                                                       child:Multi(color: Colors.white, subtitle: "Claim", weight: FontWeight.bold, size: 2.5)
                                                       ),

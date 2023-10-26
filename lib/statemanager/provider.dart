@@ -61,7 +61,7 @@ String? designation_;
   }
   DateTime checkDateTime() {
   DateTime now = DateTime.now();
-  if ((now.hour >= 0 && now.hour < 6)&&(shift_ == 'Night')) {
+  if ((now.hour >= 0 && now.hour < 11)&&(shift_ == 'Night')) {
     // If the time is after 12 AM and before 6 AM, return yesterday's date
     return now.subtract(Duration(days: 1));
   } else {

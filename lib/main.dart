@@ -54,8 +54,8 @@ class MyApp extends StatelessWidget {
                   //UserInformation(),
 
                   //Error404(),
-                LoginPage(),
-                  // LandingPage(),
+                // LoginPage(),
+                   LandingPage(),
                   // TimeTrakingReports()
               //AddUser('faraz','zelle',22),
               //LandingPage(),
