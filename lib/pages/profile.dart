@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
@@ -84,7 +86,7 @@ class DetailedInfo extends StatelessWidget {
         final DocumentSnapshot document = await FirebaseFirestore.instance.collection("$mainCollection").doc("$uid").collection(dates[i]).doc("$uid").get();
         if (document.exists) {
           print("data exists");
-          
+
         } else {
           print("data not exists");
         }
@@ -385,8 +387,47 @@ class DetailedInfo extends StatelessWidget {
         // final DocumentSnapshot document = await FirebaseFirestore.instance.collection("morning_Shift").doc("2dCXtkkraFST33jeRvgG4WWkT9i2").get();
                                                             // print(document.data());
                                                             // .doc('2dCXtkkraFST33jeRvgG4WWkT9i2').collection('comments')
-                                                     await  getDates();
-                                                     await  getFireBaseSubCollection(dateList,"morning_Shift","2dCXtkkraFST33jeRvgG4WWkT9i2");
+                                                    //  await  getDates();
+                                                    //  await  getFireBaseSubCollection(dateList,"morning_Shift","2dCXtkkraFST33jeRvgG4WWkT9i2");
+
+                //                                    await  FirebaseFirestore.instance
+                // .collection('timeTracking')
+                // .doc(Provider11.currentMonth)
+                // .collection(Provider11.shift_!)
+                // .doc("${Provider11.currentDate}")
+                // // .collection("${Provider11.uid}")
+                // // .doc("${Provider11.uid}")
+                // .get().then((DocumentSnapshot documentSnapshot) {
+                //   if (documentSnapshot.exists) {
+                //       Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+                //       print(documentSnapshot.id);
+                //   } else {
+                    
+                //   }
+                // });
+
+
+    //              await  FirebaseFirestore.instance
+    //             .collection('timeTracking')
+    //             .doc(Provider11.currentMonth)
+    //             .collection(Provider11.shift_!)
+    //             // .doc("${Provider11.currentDate}")
+    //             // .collection("${Provider11.uid}")
+    //             // .doc("${Provider11.uid}")
+    //             .get().then((QuerySnapshot querySnapshot) {
+    //     querySnapshot.docs.forEach((doc) {
+    //         // print(doc.data()['']);
+    //     });
+    // });
+
+
+    Provider11.addDates();
+
+
+
+
+
+
                                                       }, 
                                                       child:Multi(color: Colors.white, subtitle: "Claim", weight: FontWeight.bold, size: 2.5)
                                                       ),
@@ -517,58 +558,42 @@ class _ProgressDetailsState extends State<ProgressDetails> {
     Meeting(
         eventName: "Sunday",
         from: DateTime(2023, 11, 5),
-        to: DateTime(2023, 11, 5),
-        background: Colors.green,
-        isAllDay: true),
+        to: DateTime(2023, 11, 5),),
     Meeting(
         eventName: "OFF",
         from: DateTime(2023, 11, 12),
-        to: DateTime(2023, 11, 12),
-        background: Colors.purple,
-        isAllDay: true),
+        to: DateTime(2023, 11, 12),),
     Meeting(
         eventName: "OFF",
         from: DateTime(2023, 11, 19),
-        to: DateTime(2023, 11, 19),
-        background: Colors.green,
-        isAllDay: true),
+        to: DateTime(2023, 11, 19),),
     Meeting(
         eventName: "OFF",
         from: DateTime(2023, 11, 26),
-        to: DateTime(2023, 11, 26),
-        background: Colors.purple,
-        isAllDay: true),
+        to: DateTime(2023, 11, 26),),
     Meeting(
         eventName: "OFF",
         from: DateTime(2023, 10, 7),
-        to: DateTime(2023, 10, 7),
-        background: Colors.green,
-        isAllDay: true),
+        to: DateTime(2023, 10, 7),),
     Meeting(
         eventName: "OFF",
         from: DateTime(2023, 10, 21),
-        to: DateTime(2023, 10, 21),
-        background: Colors.purple,
-        isAllDay: true),
+        to: DateTime(2023, 10, 21),),
     Meeting(
         eventName: "OFF",
         from: DateTime(2023, 11, 4),
-        to: DateTime(2023, 11, 4),
-        background: Colors.purple,
-        isAllDay: true),
+        to: DateTime(2023, 11, 4),),
     Meeting(
         eventName: "OFF",
         from: DateTime(2023, 11, 18),
-        to: DateTime(2023, 11, 18),
-        background: Colors.purple,
-        isAllDay: true),
+        to: DateTime(2023, 11, 18),),
   ];
 
   Widget build(BuildContext context) {
     final Provider11 = Provider.of<Provider1>(context, listen: true);
     final size = MediaQuery.of(context).size;
     bool isDateInDataSource(DateTime date) {
-      for (Meeting meeting in list) {
+      for (Meeting meeting in Provider11.list) {
         if (meeting.from.year == date.year &&
             meeting.from.month == date.month &&
             meeting.from.day == date.day) {
@@ -609,7 +634,7 @@ class _ProgressDetailsState extends State<ProgressDetails> {
                       padding: EdgeInsets.all(4),
                       child: Container(
                         decoration: BoxDecoration(
-                            color: list
+                            color: Provider11.list
                                         .where((meeting) =>
                                             meeting.from.year ==
                                                 details.date.year &&
@@ -636,7 +661,7 @@ class _ProgressDetailsState extends State<ProgressDetails> {
                                 ),
                               ),
                               Text(
-                                list
+                                Provider11.list
                                     .where((meeting) =>
                                         meeting.from.year ==
                                             details.date.year &&
@@ -1514,35 +1539,26 @@ class MeetingDataSource extends CalendarDataSource {
     return appointments![index].to;
   }
 
-  @override
-  bool isAllDay(int index) {
-    return appointments![index].isAllDay;
-  }
 
   @override
   String getSubject(int index) {
     return appointments![index].eventName;
   }
 
-  @override
-  Color getColor(int index) {
-    return appointments![index].background;
-  }
+
 }
 
 class Meeting {
   String eventName;
   DateTime from;
   DateTime to;
-  Color background;
-  bool isAllDay;
+
 
   Meeting(
       {required this.eventName,
       required this.from,
       required this.to,
-      required this.background,
-      required this.isAllDay});
+});
 }
 
 class ChartData2 {

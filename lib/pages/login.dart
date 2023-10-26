@@ -35,9 +35,9 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
   }
-  final email = TextEditingController();
+  final email = TextEditingController(text: "abdulsami.zellesolutions@gmail.com");
 
-  final password = TextEditingController();
+  final password = TextEditingController(text: "123456");
 
   @override
   final _formKey = new GlobalKey<FormState>();
