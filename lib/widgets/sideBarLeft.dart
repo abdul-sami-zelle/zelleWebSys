@@ -104,7 +104,7 @@ class SideBarLeft extends StatelessWidget {
                 SizedBox(height: 40,),
                InkWell(
                 onTap: (){
-                  Provider11.changeSideTab(3);
+                Provider11.activeTab==3?null:Provider11.changeSideTab(3);
                 },
                  child: Container(
                  width: double.infinity,

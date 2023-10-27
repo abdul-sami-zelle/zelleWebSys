@@ -623,8 +623,8 @@ class _ProgressDetailsState extends State<ProgressDetails> {
               child: SfCalendar(
                 viewHeaderStyle: ViewHeaderStyle(
                     dayTextStyle: TextStyle(color: Colors.white)),
-                minDate: DateTime(2023, 10, 01),
-                maxDate: DateTime(2023, 11, 30),
+                minDate: DateTime(Provider11.y1!, Provider11.m1!, Provider11.d1!),
+                maxDate: DateTime(Provider11.y2!, Provider11.m2!, Provider11.d2!),
                 view: CalendarView.month,
                 monthCellBuilder:
                     (BuildContext context, MonthCellDetails details) {

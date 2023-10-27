@@ -191,7 +191,15 @@ List<DougnutChartData> categoryChart = [
       Future fetchFireBaseData()async{
 
  var dataFinal = {};
-  await cleanAllData();
+       index=0;
+  attendanceDataPdf = [];
+  graphData = [];
+  attenData = [];
+  lateArrival = [];
+  onTimemArrival = [];
+  late15min = [];
+  attenDates = [];
+  // await Future.delayed(Duration(seconds: 3));
   final ref = FirebaseDatabase.instance.ref();
 final snapshot = await ref.child('attendence/${_selectedValue}/${Provider11.shift_}').get();
 if (snapshot.exists) {
@@ -225,7 +233,7 @@ if (snapshot.exists) {
     }
     return DateTime(0); // Return a default value for invalid dates.
   }
- graphData.sort((a, b) {
+   graphData.sort((a, b) {
       final aDate = parseDate(a.x);
       final bDate = parseDate(b.x);
       return aDate.compareTo(bDate);

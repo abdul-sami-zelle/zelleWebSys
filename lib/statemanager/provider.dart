@@ -86,9 +86,6 @@ class Provider1 extends ChangeNotifier {
   // }
 
 
-
-
-
   getCurrentMonthDate(){
     TimeOfDay abc = TimeOfDay(hour: 1, minute: 0);
     DateTime now = DateTime.now();
@@ -140,7 +137,30 @@ class Provider1 extends ChangeNotifier {
       return int.parse(val);
    }
 
+  int? m1;
+  int? m2;
+  int? d1;
+  int? d2;
+  int? y1;
+  int? y2;
+
    addDates() async{
+      await FirebaseFirestore.instance
+            .collection('activeMonths')
+            .doc("OwWAY3jBOOxQh8RA1zYu")
+            .get().then((DocumentSnapshot documentSnapshot){
+              if (documentSnapshot.exists) {
+                Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+                m1 = func1(data['m1'].toString());
+                m2 = func1(data['m2'].toString());
+                d1 = func1(data['d1'].toString());
+                d2 = func1(data['d2'].toString());
+                y1 = func1(data['y1'].toString());
+                y2 = func1(data['y2'].toString());
+              }else{
+                print("not Exists");
+              }
+            });
      await FirebaseFirestore.instance
             .collection('weeklyOffs')
             .doc("2dCXtkkraFST33jeRvgG4WWkT9i2")
@@ -1378,7 +1398,7 @@ getFireData() async{
   var summit_break_list = [];
 
   int activeTab = 4;
-
+  
   changeSideTab(int tabIndex) {
     activeTab = tabIndex;
     notifyListeners();
