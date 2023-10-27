@@ -90,6 +90,7 @@ class Provider1 extends ChangeNotifier {
 
 
   getCurrentMonthDate(){
+    TimeOfDay abc = TimeOfDay(hour: 1, minute: 0);
     DateTime now = DateTime.now();
     DateTime previousMonth = DateTime(now.year, now.month - 1, now.day);
     if((now.hour >= 0 && now.hour < 11) && (shift_ == 'Night')) {
@@ -180,6 +181,7 @@ class Provider1 extends ChangeNotifier {
         
         await getCurrentMonthDate();
         await addDates();
+        currentDate = '17-10-2000';
         await FirebaseFirestore.instance
             .collection('Employes')
             .doc(user.uid)
@@ -201,7 +203,7 @@ class Provider1 extends ChangeNotifier {
                 : data['aProfile'];
             emailA_ = data['email'];
             shift_ = data['shift'];
-            db_name = data['shift'] == 'Day' ? 'morning_Shift' : 'night_Shift';
+            db_name = data['shift'] == 'Day' ? 'morningShiftTracking' : 'nightShiftTracking';
 
             print(currentMonth);
             print(currentDate);
@@ -209,12 +211,10 @@ class Provider1 extends ChangeNotifier {
              lastStats(yesterDay_month!, yesterDay_date!,
             );
             FirebaseFirestore.instance
-                .collection('timeTracking')
+                .collection(db_name!)
                 .doc(currentMonth)
-                .collection(shift_!)
+                .collection(uid!)
                 .doc("${currentDate}")
-                .collection("$uid")
-                .doc("$uid")
                 .get()
                 .then((DocumentSnapshot documentSnapshot) async {
               if (documentSnapshot.exists) {
@@ -222,7 +222,7 @@ class Provider1 extends ChangeNotifier {
               } else {
                 // checking either month exists or not
                 FirebaseFirestore.instance
-                    .collection('timeTracking')
+                    .collection(db_name!)
                     .doc(currentMonth)
                     .get()
                     .then((DocumentSnapshot documentSnapshot) async {
@@ -231,78 +231,10 @@ class Provider1 extends ChangeNotifier {
                   } else {
                     print("month not exists");
                     FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection('Day')
-                        .doc(currentDate);
-                    FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection('Night')
-                        .doc(currentDate)
-                        .set({});
-                  }
-                });
-
-                // checking date exists or not
-
-                FirebaseFirestore.instance
-                    .collection('timeTracking')
+                    .collection(db_name!)
                     .doc(currentMonth)
-                    .collection(shift_!)
-                    .doc("${currentDate}")
-                    .get()
-                    .then((DocumentSnapshot documentSnapshot) async {
-                  if (documentSnapshot.exists) {
-                    print('${documentSnapshot.id} document exists');
-                  } else {
-                    print("date not  exists");
-                    FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .set({});
-                  }
-                });
-
-                // checking uid  exists or not
-
-                FirebaseFirestore.instance
-                    .collection('timeTracking')
-                    .doc(currentMonth)
-                    .collection(shift_!)
-                    .doc("${currentDate}")
                     .collection(uid!)
-                    .doc(uid!)
-                    .get()
-                    .then((DocumentSnapshot documentSnapshot) async {
-                  if (documentSnapshot.exists) {
-                    print('${documentSnapshot.id} collection exists');
-
-                    FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
-                        .get()
-                        .then((DocumentSnapshot documentSnapshot) async {
-                      Map<String, dynamic> data =
-                          documentSnapshot.data() as Map<String, dynamic>;
-                      print(data['active']);
-                    });
-                  } else {
-                    print("collection not  exists");
-                    FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
-                        .set({
+                    .doc("${currentDate}").set({
                       'startShift': "",
                       'endShift': "",
                       "namazBreak": [],
@@ -313,9 +245,16 @@ class Provider1 extends ChangeNotifier {
                       'reason': "",
                       "active": "",
                       "activeStartTime": ""
-                    });
+                    });;
+                   
                   }
                 });
+
+                // checking date exists or not
+
+               
+
+             
               }
             });
 
@@ -399,12 +338,10 @@ class Provider1 extends ChangeNotifier {
   Future<void> endShiftDataBase() {
     notifyListeners();
     return  FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({
       'endShift': DateTime.now().toString(),
     });
@@ -414,24 +351,20 @@ class Provider1 extends ChangeNotifier {
     arrivalButtonsEnability = false;
     notifyListeners();
     return  FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({'endShift': DateTime.now().toString(), 'reason': reason});
   }
 
   Future<void> setStartShiftDb() {
     notifyListeners();
     return  FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({
       'startShift': DateTime.now().toString(),
     });
@@ -707,12 +640,10 @@ class Provider1 extends ChangeNotifier {
 
   lastStats(String month,String date,) async {
     await  FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(month)
-                        .collection(shift_!)
-                        .doc("${date}")
-                        .collection(uid!)
-                        .doc(uid)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -739,6 +670,72 @@ class Provider1 extends ChangeNotifier {
   }
 
 //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+getFireData() async{
+           
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  
+  // Reference to the subcollection of multiple collections
+  CollectionReference subCollectionRef = firestore
+      .collection("dataBase1")
+      .doc("October 2023")
+      .collection("2dCXtkkraFST33jeRvgG4WWkT9i2");
+    
+  
+  // Get the documents in the subcollection
+  QuerySnapshot querySnapshot = await subCollectionRef.get();
+
+  for (QueryDocumentSnapshot document in querySnapshot.docs) {
+    // Access data from the individual documents
+    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    
+    // Print the data to the console
+    print("Field 1: ${data['data']}");
+    // Add more fields as needed
+
+}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // already active break data
 
@@ -770,12 +767,10 @@ class Provider1 extends ChangeNotifier {
      ) async {
     try {
       final DocumentSnapshot document = await  FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc(currentDate)
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
                         .get();
       if (document.exists) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
@@ -892,12 +887,10 @@ class Provider1 extends ChangeNotifier {
 
   Future<void> updateActiveData(var breakOf) {
     return  FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
                         
         .update({
       "active": breakOf.toString(),
@@ -908,12 +901,10 @@ class Provider1 extends ChangeNotifier {
   Future<void> updateActiveDataLocally(var breakOf) {
     FirebaseFirestore.instance.enablePersistence();
     return FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({
       "active": breakOf.toString(),
       "activeStartTime": DateTime.now().toString().substring(11, 19)
@@ -922,24 +913,20 @@ class Provider1 extends ChangeNotifier {
 
   Future<void> updateActivetoNull() {
     return FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({"active": "", "activeStartTime": ""});
   }
 
   Future<void> updateActivetoNullLocally() {
     FirebaseFirestore.instance.enablePersistence();
     return FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({"active": "", "activeStartTime": ""});
   }
 
@@ -1141,12 +1128,10 @@ class Provider1 extends ChangeNotifier {
 
   Future<void> updateBreaksData2(var data) {
     return FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({
       "namazBreak": FieldValue.arrayUnion(data),
     });
@@ -1154,12 +1139,10 @@ class Provider1 extends ChangeNotifier {
 
   Future<void> updateBreaksData(var data, var dataFor) {
     return FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({
       "$dataFor": FieldValue.arrayUnion([data]),
     });
@@ -1168,12 +1151,10 @@ class Provider1 extends ChangeNotifier {
   Future<void> updateBreaksDataLocally(var data, var dataFor) async {
     FirebaseFirestore.instance.enablePersistence();
     return FirebaseFirestore.instance
-                        .collection('timeTracking')
-                        .doc(currentMonth)
-                        .collection(shift_!)
-                        .doc("${currentDate}")
-                        .collection(uid!)
-                        .doc(uid!)
+                    .collection(db_name!)
+                    .doc(currentMonth)
+                    .collection(uid!)
+                    .doc("${currentDate}")
         .update({
       "$dataFor": FieldValue.arrayUnion([data]),
     });
