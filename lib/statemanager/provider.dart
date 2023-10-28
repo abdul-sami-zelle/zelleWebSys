@@ -143,8 +143,9 @@ class Provider1 extends ChangeNotifier {
   int? d2;
   int? y1;
   int? y2;
+  String? offType;
 
-   addDates() async{
+   addOffsDates() async{
       await FirebaseFirestore.instance
             .collection('activeMonths')
             .doc("OwWAY3jBOOxQh8RA1zYu")
@@ -157,6 +158,7 @@ class Provider1 extends ChangeNotifier {
                 d2 = func1(data['d2'].toString());
                 y1 = func1(data['y1'].toString());
                 y2 = func1(data['y2'].toString());
+               
               }else{
                 print("not Exists");
               }
@@ -171,7 +173,7 @@ class Provider1 extends ChangeNotifier {
                       for (var i = 0; i < data['offs'].length; i++) {
                         list.add(
                           Meeting(
-                            eventName: "off", 
+                            eventType: data['offs'][i]['type'].toString(), 
                             from: DateTime(func1(data['offs'][i]['year'].toString())!,func1(data['offs'][i]['month'].toString())!,func1(data['offs'][i]['day'].toString())!), 
                             to: DateTime(func1(data['offs'][i]['year'].toString())!,func1(data['offs'][i]['month'].toString())!,func1(data['offs'][i]['day'].toString())!),
                             ));
@@ -200,13 +202,13 @@ class Provider1 extends ChangeNotifier {
       if (user != null) {
         
         await getCurrentMonthDate();
-        await addDates();
-        currentDate = '17-10-2000';
+        await addOffsDates();
+       
         await FirebaseFirestore.instance
             .collection('Employes')
             .doc(user.uid)
             .get()
-            .then((DocumentSnapshot documentSnapshot) {
+            .then((DocumentSnapshot documentSnapshot) async{
           if (documentSnapshot.exists) {
             Map<String, dynamic> data =
                 documentSnapshot.data() as Map<String, dynamic>;
@@ -224,7 +226,7 @@ class Provider1 extends ChangeNotifier {
             emailA_ = data['email'];
             shift_ = data['shift'];
             db_name = data['shift'] == 'Day' ? 'morningShiftTracking' : 'nightShiftTracking';
-
+            await getActualCheckInCurrentMonth(uid!,currentMonth!);
             print(currentMonth);
             print(currentDate);
              yesterdayDateData();
@@ -420,8 +422,8 @@ class Provider1 extends ChangeNotifier {
     }
   }
 
-  String? statusCategorization2(String dailyArrival) {
-    String arrivalCategory = categorizeArrival2(in_!, dailyArrival);
+  String? statusCategorization2(String dailyArrival, String date) {
+    String arrivalCategory = categorizeArrival2(octoberDates[date]!, dailyArrival);
     return arrivalCategory;
   }
 
@@ -571,8 +573,8 @@ class Provider1 extends ChangeNotifier {
 
   List<String> timee = [];
 
-  String? statusCategorization(String dailyArrival) {
-    String actualArrivalTime = in_.toString();
+  String? statusCategorization(String dailyArrival , String date) {
+    String actualArrivalTime = octoberDates[date];
 
     String arrivalCategory = categorizeArrival(actualArrivalTime, dailyArrival);
     timee.add(arrivalCategory);
@@ -1180,6 +1182,78 @@ getFireData() async{
     });
   }
 
+
+// getttt() async{
+//    Map<String, String> octoberDates = {};
+
+//   // Create the list of date-time replacements
+//   List<Map<String, String>> datess = [
+//     // {'date': '5-11-2023', 'time': '12:00:00 PM'},
+//     // {'date': '12-11-2023', 'time': '12:00:00 PM'},
+//     // {'date': '19-11-2023', 'time': '12:00:00 PM'},
+//     // {'date': '26-11-2023', 'time': '12:00:00 PM'},
+
+//   ];
+
+//   // Initialize the map with default time
+//   DateTime currentDate = DateTime(2023, 10, 1); // Start date for October 2023
+//   DateTime endDate = DateTime(2023, 10, 31);  // End date for October 2023
+
+//   while (currentDate.isBefore(endDate) || currentDate.isAtSameMomentAs(endDate)) {
+//     String formattedDate = '${currentDate.day.toString()}-${currentDate.month.toString().padLeft(2, '0')}-${currentDate.year}';
+    
+//     // Check if there's a specific time for this date in datess
+//     var timeReplacement = datess.firstWhere(
+//       (dateInfo) => dateInfo['date'] == formattedDate,
+//       orElse: () => {'time': '09:00:00 AM'} // Use the default time if not found
+//     );
+
+//     octoberDates[formattedDate] = timeReplacement['time']!;
+//     currentDate = currentDate.add(Duration(days: 1)); // Move to the next day
+//   }
+
+//  await FirebaseFirestore.instance.collection("actualCheckIns").doc("D9ssqlaGB3SnRHHn0dtWLj3Nmd53").update({
+//     "October 2023":octoberDates
+//   });
+
+//   // Print the map
+//   octoberDates.forEach((key, value) {
+//     print('$key: $value');
+//   });
+// }
+
+Map<String, dynamic> octoberDates = {};
+getActualCheckInCurrentMonth( String uid , String month) async{
+await FirebaseFirestore.instance.collection("actualCheckIns").doc("$uid").get().then((DocumentSnapshot documentSnapshot){
+  if (documentSnapshot.exists) {
+      Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+      octoberDates = data['October 2023'];
+  } else {
+    print("not not not");
+  }
+});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   changeActiveBreakIndex(String indexOfBreak) async {
     if (shiftStarted == true) {
       activeBreakIndex = indexOfBreak;
@@ -1380,6 +1454,186 @@ getFireData() async{
     notifyListeners();
   }
 
+
+
+
+
+List<String> getDatesInCurrentMonth(List<String> exclusionList) {
+  List<String> datesList = [];
+  DateTime now = DateTime.now();
+  DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
+  DateTime today = DateTime(now.year, now.month, now.day);
+
+  for (var date = firstDayOfMonth; date.isBefore(today); date = date.add(Duration(days: 1))) {
+    String formattedDate = DateFormat('d-MM-yyyy').format(date);
+
+    if (!exclusionList.contains(formattedDate)) {
+      datesList.add(formattedDate);
+    }
+  }
+
+  return datesList;
+}
+
+
+
+
+
+
+getAllData() async{
+  
+  // currentMonthDates.forEach((date) {
+  //   print(date);
+  // });
+  List<String> currentMonthDates =[];
+  await FirebaseFirestore.instance
+            .collection('offs')
+            .doc("2dCXtkkraFST33jeRvgG4WWkT9i2")
+            .get().then((DocumentSnapshot documentSnapshot) {
+             Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+             List<dynamic> dataa = data['date1'];
+             List<String> stringList = dataa.map((item) => item.toString()).toList();
+           
+           currentMonthDates = getDatesInCurrentMonth(stringList);
+             currentMonthDates.forEach((element) { 
+              print("${element} ------> here");
+             });
+            });
+
+
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('attendence/October 2023/Day').get();
+    Map<String,dynamic> allData = snapshot.value as  Map<String,dynamic>;
+    for (var i = 0; i < currentMonthDates.length; i++) {
+      if (allData.containsKey(currentMonthDates[i])) {
+        Map <String,dynamic> abc = allData[currentMonthDates[i]]['2dCXtkkraFST33jeRvgG4WWkT9i2']==null?{}:allData[currentMonthDates[i]]['2dCXtkkraFST33jeRvgG4WWkT9i2'];
+        print("${abc.length} ------> ${i+1}" );
+      } else {
+        print("not");
+      }
+    }
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // 0
 
   var call_break_dict = {};
@@ -1397,7 +1651,7 @@ getFireData() async{
   var summit_break_dict = {};
   var summit_break_list = [];
 
-  int activeTab = 4;
+  int activeTab = 0;
   
   changeSideTab(int tabIndex) {
     activeTab = tabIndex;

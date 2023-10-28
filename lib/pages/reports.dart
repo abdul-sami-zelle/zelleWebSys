@@ -218,8 +218,10 @@ if (snapshot.exists) {
        
         uidData[date] = dateData[Provider11.uid];
        
-        print(uidData[date]['checkin'].toString());
-        uidData[date]['checkin']==null?index--:graphData.add(AttendanceChartData1(x: date, y:statusCategorization(uidData[date]['checkin'],Provider11.in_), early: onTimemArrival[index-1], late: lateArrival[index-1], late15:late15min[index-1]));
+        // print('${Provider11.octoberDates[date].toString()} here are dates');
+
+
+        uidData[date]['checkin']==null?index--:graphData.add(AttendanceChartData1(x: date, y:statusCategorization(uidData[date]['checkin'],Provider11.octoberDates[date].toString()), early: onTimemArrival[index-1], late: lateArrival[index-1], late15:late15min[index-1]));
       }
     });
     print("${uidData} data is herere");
@@ -241,7 +243,7 @@ if (snapshot.exists) {
     final Map<String, dynamic> finalData = Provider11.sorting(uidData);
     for (var i = 0; i < finalData.length; i++) {
       print("${finalData.keys.toList()[i]} ---> ${i}");
-        attendanceDataPdf.add(Timings(checkin:finalData.values.toList()[i]['checkin']==null?"null":finalData.values.toList()[i]['checkin'], checkout:finalData.values.toList()[i]['checkout']==null?"null":finalData.values.toList()[i]['checkout'], date:finalData.keys.toList()[i].toString(), workingHours:finalData.values.toList()[i]['checkin']==null||finalData.values.toList()[i]['checkout']==null?"00:00:00": Provider11.getTimeDifference(finalData.values.toList()[i]['checkin'].toString(),finalData.values.toList()[i]['checkout'].toString()), status:finalData.values.toList()[i]['checkin']==null?"00:00:00": Provider11.statusCategorization2(finalData.values.toList()[i]['checkin'].toString()), serial: i+1));
+        attendanceDataPdf.add(Timings(checkin:finalData.values.toList()[i]['checkin']==null?"null":finalData.values.toList()[i]['checkin'], checkout:finalData.values.toList()[i]['checkout']==null?"null":finalData.values.toList()[i]['checkout'], date:finalData.keys.toList()[i].toString(), workingHours:finalData.values.toList()[i]['checkin']==null||finalData.values.toList()[i]['checkout']==null?"00:00:00": Provider11.getTimeDifference(finalData.values.toList()[i]['checkin'].toString(),finalData.values.toList()[i]['checkout'].toString()), status:finalData.values.toList()[i]['checkin']==null?"00:00:00": Provider11.statusCategorization2(finalData.values.toList()[i]['checkin'].toString(),finalData.keys.toList()[i].toString()), serial: i+1));
 
     }
     // Print the extracted data for the specified UID
@@ -735,7 +737,7 @@ graphData = [];
                                                     cells: [
                                                     DataCell(Multi(color: Color(0xff8F95A2), subtitle: e.serial.toString(), weight: FontWeight.normal, size: 3)),
                                                     DataCell(Multi(color: Color(0xff8F95A2), subtitle: e.date.toString(), weight: FontWeight.normal, size: 3)),                                               
-                                                    DataCell(Multi(color: Color(0xff8F95A2), subtitle: Provider11.in_.toString(), weight: FontWeight.normal, size: 3)),
+                                                    DataCell(Multi(color: Color(0xff8F95A2), subtitle: Provider11.octoberDates[e.date].toString(), weight: FontWeight.normal, size: 3)),
                                                     DataCell(Multi(color: Color(0xff8F95A2), subtitle:  Provider11.out_.toString(),  weight: FontWeight.normal, size: 3)),
                                                     DataCell(Multi(color: Color(0xff8F95A2), subtitle:  e.checkin.toString(), weight: FontWeight.normal, size: 3)),
                                                     DataCell(Multi(color: Color(0xff8F95A2), subtitle: e.checkout.toString(), weight: FontWeight.normal, size: 3)),

@@ -319,10 +319,12 @@ class _LoginPageState extends State<LoginPage> {
                                            
                                             child: ElevatedButton(
                                               onPressed: ()async {
-                                                if (_formKey.currentState!.validate()) {
-                                                  Provider11.signInWithEmailPassword(
-                                                    email.text, password.text, context);
-                                                }
+                                                // if (_formKey.currentState!.validate()) {
+                                                //   Provider11.signInWithEmailPassword(
+                                                //     email.text, password.text, context);
+                                                // }
+                                                // Provider11.getttt();
+                                                Provider11.getAllData();
                                                
                                               },
                                               style: ElevatedButton.styleFrom(

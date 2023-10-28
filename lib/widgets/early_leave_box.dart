@@ -1,4 +1,5 @@
 import 'package:emp_sys/statemanager/provider.dart';
+import 'package:emp_sys/widgets/multi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -73,6 +74,79 @@ class DialogBox extends StatelessWidget {
                 child: const Text('Enter'),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// please eng you break first
+
+
+class EndBreak extends StatelessWidget {
+  EndBreak({Key? key});
+
+  @override
+  TextEditingController reason = TextEditingController();
+  final _formKey = new GlobalKey<FormState>();
+  Widget build(BuildContext context) {
+    final Provider11 = Provider.of<Provider1>(context, listen: true);
+    return AlertDialog(
+      backgroundColor: const Color.fromARGB(255, 32, 35, 50),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 60, vertical: 30),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Attention!',
+            style: TextStyle(
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontWeight: FontWeight.w500),
+          ),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Image(
+                image: NetworkImage(
+                    'https://cdn-icons-png.flaticon.com/128/1617/1617543.png'),
+                height: 25,
+                width: 25,
+                color: Colors.white,
+              ))
+        ],
+      ),
+      content: Container(
+        height: 100,
+        width: 270,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Multi(color: Colors.white, subtitle: "Please End Your Break First", weight: FontWeight.bold, size: 3)
           ],
         ),
       ),

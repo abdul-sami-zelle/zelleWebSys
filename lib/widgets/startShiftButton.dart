@@ -113,7 +113,22 @@ class HomeScreen extends StatelessWidget {
                 Center(
                       child: NeumorphicButton(
                     onTap: () async{
-                    await  Provider11.endShiftTime();
+
+                      if ((Provider11.call_break == false)&&
+(Provider11.namaz_break == false)&&
+(Provider11.lunch_break == false)&&
+ (Provider11.casual_break == false)&&
+(Provider11.summit_break == false)) {
+                        await  Provider11.endShiftTime();
+                      } else {
+                         await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return EndBreak();
+                                },
+                              );
+                      }
+                    
                    
                     },
                     child: Container(
@@ -186,13 +201,27 @@ class HomeScreen extends StatelessWidget {
                 ),
                Center(
                       child: NeumorphicButton(
-                    onTap: () {
-                      showDialog(
+                    onTap: ()async {
+                         if ((Provider11.call_break == false)&&
+(Provider11.namaz_break == false)&&
+(Provider11.lunch_break == false)&&
+ (Provider11.casual_break == false)&&
+(Provider11.summit_break == false)) {
+                       await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return DialogBox();
                                 },
                               );
+                      } else {
+                         await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return EndBreak();
+                                },
+                              );
+                      }
+                     
                     },
                     child: Container(
                       child: Column(

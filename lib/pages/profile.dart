@@ -421,7 +421,7 @@ class DetailedInfo extends StatelessWidget {
     // });
 
 
-    Provider11.addDates();
+    Provider11.addOffsDates();
 
 
 
@@ -554,40 +554,7 @@ class _ProgressDetailsState extends State<ProgressDetails> {
     super.dispose();
   }
 
-  List<Meeting> list = [
-    Meeting(
-        eventName: "Sunday",
-        from: DateTime(2023, 11, 5),
-        to: DateTime(2023, 11, 5),),
-    Meeting(
-        eventName: "OFF",
-        from: DateTime(2023, 11, 12),
-        to: DateTime(2023, 11, 12),),
-    Meeting(
-        eventName: "OFF",
-        from: DateTime(2023, 11, 19),
-        to: DateTime(2023, 11, 19),),
-    Meeting(
-        eventName: "OFF",
-        from: DateTime(2023, 11, 26),
-        to: DateTime(2023, 11, 26),),
-    Meeting(
-        eventName: "OFF",
-        from: DateTime(2023, 10, 7),
-        to: DateTime(2023, 10, 7),),
-    Meeting(
-        eventName: "OFF",
-        from: DateTime(2023, 10, 21),
-        to: DateTime(2023, 10, 21),),
-    Meeting(
-        eventName: "OFF",
-        from: DateTime(2023, 11, 4),
-        to: DateTime(2023, 11, 4),),
-    Meeting(
-        eventName: "OFF",
-        from: DateTime(2023, 11, 18),
-        to: DateTime(2023, 11, 18),),
-  ];
+  
 
   Widget build(BuildContext context) {
     final Provider11 = Provider.of<Provider1>(context, listen: true);
@@ -642,12 +609,23 @@ class _ProgressDetailsState extends State<ProgressDetails> {
                                                 details.date.month &&
                                             meeting.from.day ==
                                                 details.date.day)
-                                        .map((meeting) => meeting.eventName)
+                                        .map((meeting) => meeting.eventType)
                                         .join('\n')
                                         .toString() ==
-                                    'OFF'
-                                ? Colors.red
-                                : Colors.green,
+                                    'WO'
+                                ? Colors.green : Provider11.list
+                                        .where((meeting) =>
+                                            meeting.from.year ==
+                                                details.date.year &&
+                                            meeting.from.month ==
+                                                details.date.month &&
+                                            meeting.from.day ==
+                                                details.date.day)
+                                        .map((meeting) => meeting.eventType)
+                                        .join('\n')
+                                        .toString() ==
+                                    'AO'
+                                ? Colors.lightBlue:Colors.red,
                             borderRadius: BorderRadius.circular(5)),
                         child: Center(
                           child: Column(
@@ -660,20 +638,7 @@ class _ProgressDetailsState extends State<ProgressDetails> {
                                   color: Colors.white,
                                 ),
                               ),
-                              Text(
-                                Provider11.list
-                                    .where((meeting) =>
-                                        meeting.from.year ==
-                                            details.date.year &&
-                                        meeting.from.month ==
-                                            details.date.month &&
-                                        meeting.from.day == details.date.day)
-                                    .map((meeting) => meeting.eventName)
-                                    .join('\n'),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
+              
                             ],
                           ),
                         ),
@@ -1549,13 +1514,13 @@ class MeetingDataSource extends CalendarDataSource {
 }
 
 class Meeting {
-  String eventName;
+  String eventType;
   DateTime from;
   DateTime to;
 
 
   Meeting(
-      {required this.eventName,
+      {required this.eventType,
       required this.from,
       required this.to,
 });

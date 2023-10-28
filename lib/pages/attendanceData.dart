@@ -187,7 +187,7 @@ if (snapshot.exists) {
         uidData[date] = dateData[desiredUid];
        
         print(uidData[date]['checkin'].toString());
-        uidData[date]['checkin']==null?index--:graphData.add(AttendanceChartData1(x: date, y:statusCategorization(uidData[date]['checkin'],Provider11.in_.toString()), early: onTimemArrival[index-1], late: lateArrival[index-1], late15:late15min[index-1]));
+        uidData[date]['checkin']==null?index--:graphData.add(AttendanceChartData1(x: date, y:statusCategorization(uidData[date]['checkin'],Provider11.octoberDates[date]), early: onTimemArrival[index-1], late: lateArrival[index-1], late15:late15min[index-1]));
       }
     });
     print("${uidData} data is herere");
@@ -195,7 +195,7 @@ if (snapshot.exists) {
     final Map<String, dynamic> finalData = Provider11.sorting(uidData);
     for (var i = 0; i < finalData.length; i++) {
       print("${finalData.keys.toList()[i]} ---> ${i}");
-        attendanceDataPdf.add(Timings(checkin:finalData.values.toList()[i]['checkin']==null?"null":finalData.values.toList()[i]['checkin'], checkout:finalData.values.toList()[i]['checkout']==null?"null":finalData.values.toList()[i]['checkout'], date:finalData.keys.toList()[i].toString(), workingHours:finalData.values.toList()[i]['checkin']==null||finalData.values.toList()[i]['checkout']==null?"nil": Provider11.getTimeDifference(finalData.values.toList()[i]['checkin'].toString(),finalData.values.toList()[i]['checkout'].toString()), status:finalData.values.toList()[i]['checkin']==null?"nil": Provider11.statusCategorization2(finalData.values.toList()[i]['checkin'].toString())));
+        attendanceDataPdf.add(Timings(checkin:finalData.values.toList()[i]['checkin']==null?"null":finalData.values.toList()[i]['checkin'], checkout:finalData.values.toList()[i]['checkout']==null?"null":finalData.values.toList()[i]['checkout'], date:finalData.keys.toList()[i].toString(), workingHours:finalData.values.toList()[i]['checkin']==null||finalData.values.toList()[i]['checkout']==null?"nil": Provider11.getTimeDifference(finalData.values.toList()[i]['checkin'].toString(),finalData.values.toList()[i]['checkout'].toString()), status:finalData.values.toList()[i]['checkin']==null?"nil": Provider11.statusCategorization2(finalData.values.toList()[i]['checkin'].toString(),finalData.keys.toList()[i].toString())));
 
     }
     // Print the extracted data for the specified UID
@@ -425,7 +425,7 @@ return attenData;
                                              
                                                   },
                                                   child: AttendenceBox(checkin: attenData[index]['checkin'].toString(), checkout: attenData[index]['checkout'].toString(), hours: 
-                                  ((attenData[index]['checkin'].toString()=="null") || (attenData[index]['checkout'].toString()=="null"))?  "null":  Provider11.getTimeDifference(attenData[index]['checkin'].toString(),attenData[index]['checkout'].toString()), dates: attenDates[index].toString(), status:attenData[index]['checkin'].toString()=="null"?"null": Provider11.statusCategorization(attenData[index]['checkin'].toString()).toString(),)
+                                  ((attenData[index]['checkin'].toString()=="null") || (attenData[index]['checkout'].toString()=="null"))?  "null":  Provider11.getTimeDifference(attenData[index]['checkin'].toString(),attenData[index]['checkout'].toString()), dates: attenDates[index].toString(), status:attenData[index]['checkin'].toString()=="null"?"null": Provider11.statusCategorization(attenData[index]['checkin'].toString(),attenDates[index].toString()).toString(),)
                                             );
                                           },
                                         ),
