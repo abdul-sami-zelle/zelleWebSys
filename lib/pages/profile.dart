@@ -421,7 +421,7 @@ class DetailedInfo extends StatelessWidget {
     // });
 
 
-    Provider11.addOffsDates();
+ 
 
 
 
@@ -690,7 +690,7 @@ class _ProgressDetailsState extends State<ProgressDetails> {
                       SizedBox(
                         height: 15,
                       ),
-                      Slider2(),
+                      // Slider2(),
                     ],
                   ),
                 ),

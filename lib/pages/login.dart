@@ -35,9 +35,9 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
   }
-  final email = TextEditingController(text: "abdulsami.zellesolutions@gmail.com");
+  final email = TextEditingController();
 
-  final password = TextEditingController(text: "123456");
+  final password = TextEditingController();
 
   @override
   final _formKey = new GlobalKey<FormState>();
@@ -319,12 +319,12 @@ class _LoginPageState extends State<LoginPage> {
                                            
                                             child: ElevatedButton(
                                               onPressed: ()async {
-                                                // if (_formKey.currentState!.validate()) {
-                                                //   Provider11.signInWithEmailPassword(
-                                                //     email.text, password.text, context);
-                                                // }
-                                                // Provider11.getttt();
-                                                Provider11.getAllData();
+                                                if (_formKey.currentState!.validate()) {
+                                                  Provider11.signInWithEmailPassword(
+                                                    email.text, password.text, context);
+                                                }
+                                             //await  Provider11.getttt();
+                                                // Provider11.getAllData();
                                                
                                               },
                                               style: ElevatedButton.styleFrom(
